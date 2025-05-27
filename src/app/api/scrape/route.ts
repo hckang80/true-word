@@ -91,6 +91,20 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(result);
   } catch (error) {
     console.error('Error scraping URL:', error);
+
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const message = error.response?.statusText || error.message;
+      return NextResponse.json(
+        {
+          message: `Failed to scrape URL: ${message}`,
+          status,
+          url: error.config?.url
+        },
+        { status: error.response?.status || 500 }
+      );
+    }
+
     return NextResponse.json({ message: 'Error scraping URL' }, { status: 500 });
   }
 }
