@@ -12,6 +12,8 @@ const CACHE_TTL = 24 * 60 * 60;
 
 const MIN_CONTENT_LENGTH = 100;
 
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export async function POST(request: NextRequest) {
   try {
     const { url, description } = await request.json();
@@ -29,6 +31,8 @@ export async function POST(request: NextRequest) {
     if (cached) {
       return NextResponse.json(cached);
     }
+
+    await delay(1000 + Math.random() * 2000);
 
     const { data: html } = await axios.get(url, {
       headers: {
